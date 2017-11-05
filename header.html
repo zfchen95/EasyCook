@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>EasyCook</title>
+
+		<link href="{{url_for('static', filename = 'css/bootstrap.min.css')}}" rel="stylesheet">		
+		
+	<!--	<link href="css/easycook.css" rel="stylesheet">-->
+
+    	<link href="{{url_for('static', filename = 'css/loglog.css')}}" rel="stylesheet">
+
+</head>
+
+	<!-- Navigation -->
+{% if session.logged_in %}
+    <nav class="navbar navbar-expand-lg bg-light fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+		<img style="width:20%" src="{{url_for('static', filename='images/Logo.png')}}">
+		</a>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Log Out</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+{% else %}
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg bg-light fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+			<img style="width:20%" src="{{url_for('static', filename='images/Logo.png')}}">
+		</a>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" onclick="document.getElementById('id02').style.display='block'; document.getElementById('id01').style.display='none';" id="login"  href="#">Log In</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" onclick="document.getElementById('id01').style.display='block'; document.getElementById('id02').style.display='none';" id="signup" href="#">Sign up</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+</nav>
+
+{% endif %}
+
+<!-- sign up box -->
+<div id="id01" class="modal" method="post">
+  <form class="modal-content animate" action="/signup">
+    <div class="container">
+      <label><b>Email</b></label>
+      <input type="email" class="form-control" placeholder="Enter Email" name="inputEmail" required>
+
+      <label><b>User Name</b></label>
+      <input type="text" class="form-control"  placeholder="Enter User Name" name="inputName" required>
+
+      <label><b>Password</b></label>
+      <input type="password" class="form-control"  placeholder="Enter Password" id="password" required>
+      <label><b>Confirm Password</b></label>
+      <input type="password" class="form-control" placeholder="Confirm Password" id="confirm_password" required>
+
+
+      <label><b>Country</b></label>
+      <input type="text" class="form-control" placeholder="Enter Your Country (Not required)" name="inputCountry">
+      <input type="checkbox" checked="checked"> Remember me
+      <p>By creating an account you agree to our <a href="#">Terms & Privacy</a>.</p>
+
+      <div class="clearfix">
+        <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+        <button type="submit" class="signupbtn">Sign Up</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- log in box-->
+<div id="id02" class="modal" method="post"> 
+  <form class="modal-content animate" action="/login"> 
+    <div class="container"> 
+      <label><b>Email</b></label> 
+      <input type="email" class="form-control" placeholder="Email" name="email" required> 
+      <label><b>Password</b></label> 
+      <input type="password" class="form-control" placeholder="Password" name="PW" required> 
+      <input type="checkbox" checked="checked"> Remember me
+      <div class="clearfix"> 
+        <button type="button" onclick="document.getElementById('id02').style.display='none'" class="cancelbtn">Cancel</button> 
+        <button type="submit" class="signupbtn">Log In</button> 
+      </div> 
+      <p>Not a member? <a onclick="document.getElementById('id01').style.display='block'; document.getElementById('id02').style.display='none';" id="signup" href="#">Sign Up</a></p>
+      <p>Forgot <a href="#">Password?</a></p> 
+      {{error}}
+    </div> 
+  </form> 
+</div> 
+
+<script>
+// Get the modal
+var modal = document.getElementById('id01');
+var modal2 = document.getElementById('id02');
+var password = document.getElementById("password");
+var confirm_password = document.getElementById("confirm_password");
+function validatePassword(){
+  if(password.value != confirm_password.value) {
+    confirm_password.setCustomValidity("Passwords Don't Match");
+  } else {
+    confirm_password.setCustomValidity('');
+  }
+}
+
+password.onchange = validatePassword;
+confirm_password.onkeyup = validatePassword;
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+
+    if (event.target == modal2) {
+        modal2.style.display = "none";
+    }
+}
+</script>
+
+	<body>
+
+		<div class="container-fluid">
+			<div class="container-fluid" style="position:sticky;">
+			{% with messages = get_flashed_messages() %}
+				{% if messages %}
+					{% for message in messages %}
+						<div class="alert alert-info alert-dismissable" role="alert" style="z-index:9999;position:relative;top:100px;">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="position:absolute;transform:translateY(-50%);height: 100%; right:-48%;top:34%;outline:none"><span aria-hidden = "true">&times;</span></button>
+						 {{message}}
+						</div>
+					{% endfor %}
+				{% endif %}
+			{% endwith %}
+			</div>
+			{% block body %} {% endblock %}
+		</div>
+
+    <footer class="bg-faded text-center py-5">
+      <div class="container">
+        <p class="m-0">Copyright &copy; GSON 2017</p>
+      </div>
+    </footer>
+	
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+  </body>
+
+
+	</body>
+</html>
+
+
